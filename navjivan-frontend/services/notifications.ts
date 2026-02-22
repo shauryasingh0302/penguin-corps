@@ -3,7 +3,12 @@ import { Platform } from 'react-native';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import API from './api';
 
+let hasRegistered = false;
+
 export const registerForPushNotificationsAsync = async () => {
+    if (hasRegistered) return null;
+    hasRegistered = true;
+
     let token;
 
     const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;

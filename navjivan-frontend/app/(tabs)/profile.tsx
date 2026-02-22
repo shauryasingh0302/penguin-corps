@@ -3,13 +3,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import {
-    Image,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -86,15 +86,15 @@ export default function ProfileScreen() {
           }
         >
           <Animated.View entering={FadeInDown.delay(100).duration(500)}>
-            {}
+            { }
             <View style={styles.profileHeader}>
-              {}
+              { }
               {user?.avatarUrl ? (
                 <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
               ) : (
                 <View style={[styles.avatar, styles.avatarFallback]}>
                   <Text style={styles.avatarInitial}>
-                    {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                    {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                   </Text>
                 </View>
               )}
@@ -103,14 +103,14 @@ export default function ProfileScreen() {
                 <Ionicons name="pencil" size={18} color={LPColors.text} />
               </TouchableOpacity>
 
-              <Text style={styles.name}>{user?.name}</Text>
+              <Text style={styles.name}>{user?.name || "User"}</Text>
               <Text style={styles.since}>
-                Quit Journey Member since {memberSince}
+                Quit Journey Member since {memberSince || "2024"}
               </Text>
             </View>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(200).duration(500)}
             style={styles.statsContainer}
@@ -122,7 +122,7 @@ export default function ProfileScreen() {
                 color={LPColors.primary}
               />
               <Text style={styles.statLabel}>Streak</Text>
-              <Text style={styles.statValue}>{stats.streakDays} days</Text>
+              <Text style={styles.statValue}>{stats?.streakDays || 0} days</Text>
             </View>
             <View style={styles.statBox}>
               <Ionicons
@@ -131,7 +131,7 @@ export default function ProfileScreen() {
                 color={LPColors.primary}
               />
               <Text style={styles.statLabel}>Cravings</Text>
-              <Text style={styles.statValue}>{stats.cravingsHandled}</Text>
+              <Text style={styles.statValue}>{stats?.cravingsHandled || 0}</Text>
             </View>
             <View style={styles.statBox}>
               <Ionicons
@@ -140,11 +140,11 @@ export default function ProfileScreen() {
                 color={LPColors.primary}
               />
               <Text style={styles.statLabel}>Saved</Text>
-              <Text style={styles.statValue}>₹{stats.moneySaved}</Text>
+              <Text style={styles.statValue}>₹{stats?.moneySaved || 0}</Text>
             </View>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(300).duration(500)}
             style={styles.section}
@@ -157,7 +157,7 @@ export default function ProfileScreen() {
                 style={styles.overviewBox}
               >
                 <Text style={styles.overviewLabel}>Goals completed</Text>
-                <Text style={styles.overviewValue}>{stats.goalsCompleted}</Text>
+                <Text style={styles.overviewValue}>{stats?.goalsCompleted || 0}</Text>
               </LinearGradient>
 
               <LinearGradient
@@ -166,7 +166,7 @@ export default function ProfileScreen() {
               >
                 <Text style={styles.overviewLabel}>Cravings handled</Text>
                 <Text style={styles.overviewValue}>
-                  {stats.cravingsHandled}
+                  {stats?.cravingsHandled || 0}
                 </Text>
               </LinearGradient>
 
@@ -175,12 +175,12 @@ export default function ProfileScreen() {
                 style={styles.overviewBox}
               >
                 <Text style={styles.overviewLabel}>Money saved</Text>
-                <Text style={styles.overviewValue}>₹{stats.moneySaved}</Text>
+                <Text style={styles.overviewValue}>₹{stats?.moneySaved || 0}</Text>
               </LinearGradient>
             </View>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(400).duration(500)}
             style={styles.section}
@@ -270,7 +270,7 @@ export default function ProfileScreen() {
             </Animated.View>
           )}
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(500).duration(500)}
             style={{ paddingHorizontal: 16 }}
@@ -278,7 +278,7 @@ export default function ProfileScreen() {
             <HealthSyncSettings />
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(550).duration(500)}
             style={styles.settingsContainer}
@@ -304,7 +304,7 @@ export default function ProfileScreen() {
             ))}
           </Animated.View>
 
-          {}
+          { }
           <Animated.View entering={FadeInDown.delay(600).duration(500)}>
             <TouchableOpacity style={styles.logoutButton} onPress={logout}>
               <Text style={styles.logoutText}>Logout</Text>

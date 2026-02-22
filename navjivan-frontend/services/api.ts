@@ -1,7 +1,7 @@
 import axios from "axios";
 import { DeviceEventEmitter, Platform } from "react-native";
 
-const LOCAL_IP = "10.47.0.89";
+const LOCAL_IP = "10.47.0.90";
 
 let BASE_URL = `http://${LOCAL_IP}:5000`;
 // let BASE_URL = "https://navjivan-backend.onrender.com";
@@ -122,7 +122,7 @@ export const logDuoSmokeApi = (count: number) => API.post("/api/duo/log-smoke", 
 export const sendEncouragementApi = (message?: string) => API.post("/api/duo/encourage", { message });
 export const leaveDuoApi = () => API.post("/api/duo/leave");
 export const getPartnerDashboardApi = () => API.get("/api/duo/partner-dashboard");
-export const logForPartnerApi = (type: "water" | "meal" | "smoke", value?: number) => 
+export const logForPartnerApi = (type: "water" | "meal" | "smoke", value?: number) =>
   API.post("/api/duo/log-for-partner", { type, value });
 
 // ── User Mode APIs ──

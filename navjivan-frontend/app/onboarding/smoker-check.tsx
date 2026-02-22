@@ -66,7 +66,7 @@ export default function SmokerCheckScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const auth: any = useContext(AuthContext);
-  
+
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState<'smoker' | 'nonsmoker' | null>(null);
 
@@ -84,7 +84,7 @@ export default function SmokerCheckScreen() {
       // If we have signup data, create the account now
       if (signupData && !auth.token) {
         console.log('[SmokerCheck] Creating account with smoker status:', isSmoker);
-        
+
         const finalPayload = {
           ...signupData,
           isSmoker,
@@ -107,9 +107,10 @@ export default function SmokerCheckScreen() {
       // Navigate to health sync setup
       router.push({
         pathname: '/onboarding/health-sync-setup',
-        params: { 
+        params: {
           isSmoker: isSmoker.toString(),
           appMode,
+          signupData: params.signupData as string || '',
         },
       });
 

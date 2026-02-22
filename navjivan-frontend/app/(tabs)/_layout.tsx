@@ -1,11 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { LPColors } from '../../constants/theme';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function TabLayout() {
+  const auth: any = useContext(AuthContext);
+  const isSmoker = auth?.user?.isSmoker ?? false;
+  const showGeofencing = isSmoker; // Hide geofencing for non-smoker solo users
+
   return (
     <Tabs
       screenOptions={{
@@ -58,6 +63,7 @@ export default function TabLayout() {
         name="geofencing"
         options={{
           title: 'Geofencing',
+          href: showGeofencing ? undefined : null,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? 'map' : 'map-outline'}

@@ -1,11 +1,26 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import * as Location from "expo-location";
-import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
 
 const GEOFENCING_TASK = "GEOFENCING_TASK";
 
 const GEOFENCE_ZONES_KEY = "@geofence_zones";
+
+const isExpoGo =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+// Lazily load expo-notifications only when NOT running in Expo Go
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+function getNotificationsModule(): typeof import("expo-notifications") | null {
+  if (isExpoGo) {
+    console.log(
+      "[Geofencing] Running in Expo Go - notifications unavailable",
+    );
+    return null;
+  }
+  return require("expo-notifications");
+}
 
 export interface GeofenceZone {
   id: string;
@@ -18,15 +33,19 @@ export interface GeofenceZone {
   notifyOnExit: boolean;
 }
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+// Set up notification handler only outside Expo Go
+const Notifications = getNotificationsModule();
+if (Notifications) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+}
 
 TaskManager.defineTask(GEOFENCING_TASK, async ({ data, error }) => {
   if (error) {
@@ -74,11 +93,14 @@ export async function requestPermissions(): Promise<boolean> {
       console.log("Failed to request background permission:", bgErr);
     }
 
-    const { status: notificationStatus } =
-      await Notifications.requestPermissionsAsync();
-    if (notificationStatus !== "granted") {
-      console.log("Notification permission denied");
-      return false;
+    const NotifModule = getNotificationsModule();
+    if (NotifModule) {
+      const { status: notificationStatus } =
+        await NotifModule.requestPermissionsAsync();
+      if (notificationStatus !== "granted") {
+        console.log("Notification permission denied");
+        return false;
+      }
     }
 
     return true;
@@ -195,6 +217,9 @@ async function sendGeofenceNotification(
   eventType: "enter" | "exit",
 ): Promise<void> {
   try {
+    const NotifModule = getNotificationsModule();
+    if (!NotifModule) return;
+
     let title = "";
     let body = "";
 
@@ -216,12 +241,12 @@ async function sendGeofenceNotification(
       }
     }
 
-    await Notifications.scheduleNotificationAsync({
+    await NotifModule.scheduleNotificationAsync({
       content: {
         title,
         body,
         sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
+        priority: NotifModule.AndroidNotificationPriority.HIGH,
       },
       trigger: null,
     });
@@ -237,8 +262,14 @@ export async function getCurrentLocation(): Promise<Location.LocationObject | nu
       return null;
     }
 
+    // Try last known position first (instant) before fetching fresh GPS
+    const lastKnown = await Location.getLastKnownPositionAsync();
+    if (lastKnown) {
+      return lastKnown;
+    }
+
     const location = await Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High,
+      accuracy: Location.Accuracy.Balanced,
     });
 
     return location;
@@ -379,14 +410,17 @@ TaskManager.defineTask(IDLE_DETECTION_TASK, async ({ data, error }) => {
 
 async function sendIdleNotification(idleTimeMs: number): Promise<void> {
   try {
+    const NotifModule = getNotificationsModule();
+    if (!NotifModule) return;
+
     const minutes = Math.floor(idleTimeMs / 60000);
 
-    await Notifications.scheduleNotificationAsync({
+    await NotifModule.scheduleNotificationAsync({
       content: {
         title: "Time to Move!",
         body: `You've been stationary for ${minutes}+ minutes. Get up and stretch, take a short walk, or do some quick exercises!`,
         sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
+        priority: NotifModule.AndroidNotificationPriority.HIGH,
       },
       trigger: null,
     });

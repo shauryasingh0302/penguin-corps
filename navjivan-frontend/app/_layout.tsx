@@ -10,7 +10,7 @@ import { AuthContext, AuthProvider } from "../context/AuthContext";
 import { GoalsProvider } from "../context/GoalsContext";
 import { StepsProvider } from "../context/StepsContext";
 
-import "../services/geofencing";
+
 
 import { LPColors } from "../constants/theme";
 
@@ -88,6 +88,9 @@ function ProtectedNavigation() {
       <Stack.Screen name="onboarding/health-sync-setup" />
       <Stack.Screen name="onboarding/mode-selection" />
       <Stack.Screen name="onboarding/duo-pairing" />
+      <Stack.Screen name="onboarding/smoker-check" />
+      <Stack.Screen name="onboarding/hotspot-selection" />
+      <Stack.Screen name="onboarding/plant-selection" />
 
       { }
       <Stack.Screen name="(tabs)" />

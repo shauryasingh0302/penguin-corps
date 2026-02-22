@@ -2,13 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LPColors } from "../../constants/theme";
@@ -244,15 +244,11 @@ export default function QuestionnaireScreen() {
   const auth: any = useContext(AuthContext);
   const params = useLocalSearchParams();
 
-  // Determine initial phase based on whether isSmoker is already known
+  // Skip smoker-check if the user already has it set (e.g. from joining a duo or previous session)
   const getInitialPhase = (): QuestionPhase => {
-    // If user already has isSmoker set (came from Solo flow via smoker-check)
-    if (auth.user?.isSmoker === true) {
-      return "smoking"; // Go straight to smoking questions
-    } else if (auth.user?.isSmoker === false) {
-      return "health"; // Go straight to health questions
+    if (auth.user && typeof auth.user.isSmoker === 'boolean') {
+      return auth.user.isSmoker ? "smoking" : "health";
     }
-    // For Duo mode or new users, show smoker-check question first
     return "smoker-check";
   };
 
@@ -311,15 +307,26 @@ export default function QuestionnaireScreen() {
     const userIsSmoker = answer === "Quit Smoking & Rebuild My Health";
     setIsSmoker(userIsSmoker);
 
-    // Update server with smoker status (for Duo mode where it wasn't set earlier)
-    if (auth.user && auth.user.isSmoker === undefined) {
-      try {
+    try {
+      // If signup data exists and no account yet, create account now
+      if (signupData && !auth.token) {
+        console.log('[Questionnaire] Creating account with smoker status:', userIsSmoker);
+        const appMode = (params.appMode as string) || 'solo';
+        const payload = {
+          ...signupData,
+          isSmoker: userIsSmoker,
+          appMode,
+        };
+        const res = await API.post('/auth/signup', payload);
+        const { user, token } = res.data as { user: any; token: string };
+        await auth.loginUser(user, token);
+      } else if (auth.user && auth.token) {
+        // Already have account, just update smoker status
         await API.post('/api/users/update-smoker-status', { isSmoker: userIsSmoker });
-        // Update local auth state
         await auth.loginUser({ ...auth.user, isSmoker: userIsSmoker }, auth.token);
-      } catch (err) {
-        console.error('[Questionnaire] Failed to update smoker status:', err);
       }
+    } catch (err: any) {
+      console.error('[Questionnaire] Failed to set smoker status:', err.response?.data || err.message);
     }
 
     setCurrentStep(0);
@@ -372,7 +379,7 @@ export default function QuestionnaireScreen() {
         smokingData: smoking,
       });
 
-      setRecommendation(response.data);
+      setRecommendation(response.data as AIRecommendation);
       setPhase("recommendation");
     } catch (error) {
       console.error("Error analyzing questionnaire:", error);
@@ -420,7 +427,7 @@ export default function QuestionnaireScreen() {
         // New flow: User already exists, update their data
         console.log("[Questionnaire] Updating existing user with questionnaire data...");
         await API.post("/api/users/update-questionnaire", questionnaireData);
-        
+
         // Update local auth state
         if (auth.user) {
           await auth.loginUser(
@@ -455,7 +462,7 @@ export default function QuestionnaireScreen() {
       Alert.alert(
         "Error",
         err.response?.data?.message ||
-          "Could not save your data. Please try again.",
+        "Could not save your data. Please try again.",
         [
           { text: "Try Again", style: "cancel" },
           { text: "Go Back", onPress: () => router.replace("/auth/signup") },
@@ -486,42 +493,42 @@ export default function QuestionnaireScreen() {
   if (phase === "recommendation" && recommendation) {
     const fitnessInfo = recommendation.fitnessLevel
       ? {
-          beginner: {
-            icon: "leaf-outline",
-            color: "#4CAF50",
-            title: "Beginner",
-            description: "Start with light activities.",
-          },
-          intermediate: {
-            icon: "fitness-outline",
-            color: "#FF9800",
-            title: "Intermediate",
-            description: "Moderate workout plan.",
-          },
-          advanced: {
-            icon: "barbell-outline",
-            color: "#F44336",
-            title: "Advanced",
-            description: "Intense workout plan.",
-          },
-        }[recommendation.fitnessLevel]
+        beginner: {
+          icon: "leaf-outline",
+          color: "#4CAF50",
+          title: "Beginner",
+          description: "Start with light activities.",
+        },
+        intermediate: {
+          icon: "fitness-outline",
+          color: "#FF9800",
+          title: "Intermediate",
+          description: "Moderate workout plan.",
+        },
+        advanced: {
+          icon: "barbell-outline",
+          color: "#F44336",
+          title: "Advanced",
+          description: "Intense workout plan.",
+        },
+      }[recommendation.fitnessLevel]
       : null;
 
     const smokingInfo = recommendation.smokingPlan
       ? {
-          "cold-turkey": {
-            icon: "flash",
-            color: "#FF3B30",
-            title: "Cold Turkey",
-            description: "Stop smoking completely.",
-          },
-          gradual: {
-            icon: "trending-down",
-            color: LPColors.primary,
-            title: "Gradual Reduction",
-            description: "Slowly reduce cigarettes.",
-          },
-        }[recommendation.smokingPlan]
+        "cold-turkey": {
+          icon: "flash",
+          color: "#FF3B30",
+          title: "Cold Turkey",
+          description: "Stop smoking completely.",
+        },
+        gradual: {
+          icon: "trending-down",
+          color: LPColors.primary,
+          title: "Gradual Reduction",
+          description: "Slowly reduce cigarettes.",
+        },
+      }[recommendation.smokingPlan]
       : null;
 
     return (
@@ -538,7 +545,7 @@ export default function QuestionnaireScreen() {
             Based on your answers, here's what we recommend:
           </Text>
 
-          {}
+          { }
           {Object.keys(healthAnswers).length > 0 && fitnessInfo && (
             <View style={styles.recommendationCard}>
               <View

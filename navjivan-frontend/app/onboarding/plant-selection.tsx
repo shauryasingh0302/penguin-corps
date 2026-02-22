@@ -12,11 +12,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, { 
-  FadeInDown, 
-  FadeInUp, 
-  useAnimatedStyle, 
-  useSharedValue, 
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -113,13 +113,13 @@ const PlantPreview = ({ plant, selected }: { plant: typeof PLANTS[0]; selected: 
         {/* Pot */}
         <Rect x="15" y="70" width="50" height="25" fill="#A0522D" rx="4" />
         <Rect x="10" y="65" width="60" height="8" fill="#8B4513" rx="3" />
-        
+
         {/* Soil */}
         <Ellipse cx="40" cy="68" rx="22" ry="5" fill="#5D3A1A" />
-        
+
         {/* Stem */}
         <Rect x="37" y="30" width="6" height="40" fill={plant.color} rx="2" />
-        
+
         {/* Leaves based on plant type */}
         {plant.id === 'tulsi' && (
           <>
@@ -185,7 +185,7 @@ const PlantPreview = ({ plant, selected }: { plant: typeof PLANTS[0]; selected: 
             <Ellipse cx="52" cy="50" rx="10" ry="6" fill="#27AE60" />
           </G>
         )}
-        
+
         {/* Selection indicator */}
         {selected && (
           <G>
@@ -206,13 +206,13 @@ export default function PlantSelectionScreen() {
 
   const handleSelectPlant = async () => {
     if (!selectedPlant) return;
-    
+
     setLoading(true);
     LPHaptics.selection();
 
     try {
       // Save selected plant to user profile
-      await API.patch('/user/update-profile', {
+      await API.post('/api/users/update-questionnaire', {
         selectedPlant: selectedPlant,
       });
 
@@ -249,7 +249,7 @@ export default function PlantSelectionScreen() {
           <Animated.View entering={FadeInUp.delay(100).duration(600)} style={styles.header}>
             <Text style={styles.title}>🌱 Choose Your Plant</Text>
             <Text style={styles.subtitle}>
-              {auth.user?.appMode === 'duo' 
+              {auth.user?.appMode === 'duo'
                 ? 'Pick a plant to co-parent with your partner!'
                 : 'Pick a plant to grow on your journey!'}
             </Text>
@@ -261,7 +261,7 @@ export default function PlantSelectionScreen() {
           {/* Plant Grid */}
           <View style={styles.plantsGrid}>
             {PLANTS.map((plant, index) => (
-              <Animated.View 
+              <Animated.View
                 key={plant.id}
                 entering={FadeInDown.delay(200 + index * 100).duration(500)}
               >
@@ -278,11 +278,11 @@ export default function PlantSelectionScreen() {
                   activeOpacity={0.8}
                 >
                   <PlantPreview plant={plant} selected={selectedPlant === plant.id} />
-                  
+
                   <Text style={styles.plantIcon}>{plant.icon}</Text>
                   <Text style={styles.plantName}>{plant.name}</Text>
                   <Text style={styles.plantHindi}>{plant.hindi}</Text>
-                  
+
                   <View style={[styles.careTag, { backgroundColor: `${plant.color}20` }]}>
                     <Text style={[styles.careText, { color: plant.color }]}>
                       {plant.careLevel}

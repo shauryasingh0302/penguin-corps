@@ -39,7 +39,7 @@ export const StepsProvider = ({ children }: { children: ReactNode }) => {
 
     const subscription = useRef<Pedometer.Subscription | null>(null);
     const appState = useRef(AppState.currentState);
-    const syncInterval = useRef<NodeJS.Timeout | null>(null);
+    const syncInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // Load health sync preference
     useEffect(() => {
@@ -56,7 +56,7 @@ export const StepsProvider = ({ children }: { children: ReactNode }) => {
         const newValue = !isHealthSyncEnabled;
         setIsHealthSyncEnabled(newValue);
         await AsyncStorage.setItem(STORAGE_KEY_HEALTH_SYNC, newValue.toString());
-        
+
         if (newValue) {
             // Immediately sync when enabled
             await syncFromHealthApps();
@@ -75,22 +75,22 @@ export const StepsProvider = ({ children }: { children: ReactNode }) => {
         try {
             console.log('[StepsContext] Syncing from health apps...');
             const result = await syncHealthData();
-            
+
             if (result && result.steps > 0) {
                 console.log('[StepsContext] Health sync result:', result);
-                
+
                 // Use health data if it's higher than pedometer (more accurate)
                 if (result.steps > currentStepsRef.current) {
                     setCurrentSteps(result.steps);
                     await AsyncStorage.setItem(STORAGE_KEY_STEPS, result.steps.toString());
                 }
-                
+
                 // Store health-specific data
                 setHealthCalories(result.calories);
                 setHealthDistance(result.distance);
                 setDataSource(result.source);
                 setLastSynced(result.lastSynced);
-                
+
                 // Cache health data
                 await AsyncStorage.setItem(STORAGE_KEY_HEALTH_DATA, JSON.stringify({
                     steps: result.steps,

@@ -122,7 +122,7 @@ export const HealthSyncSettings = () => {
                 <View style={{ flex: 1 }}>
                     <Text style={styles.toggleLabel}>Enable Health Sync</Text>
                     <Text style={styles.toggleSub}>
-                        {available ? healthSource : 'Not available on this device'}
+                        {available ? (healthSource || 'Checking...') : 'Not available on this device'}
                     </Text>
                 </View>
                 <Switch
@@ -138,13 +138,13 @@ export const HealthSyncSettings = () => {
                 <View style={styles.statusCard}>
                     <View style={styles.statusRow}>
                         <Ionicons name="cloud-done" size={20} color={PASTEL.mint} />
-                        <Text style={styles.statusText}>Source: {dataSource}</Text>
+                        <Text style={styles.statusText}>Source: {dataSource || 'Unknown'}</Text>
                     </View>
                     {lastSynced && (
                         <View style={styles.statusRow}>
                             <Ionicons name="time" size={20} color={PASTEL.blue} />
                             <Text style={styles.statusText}>
-                                Last synced: {lastSynced.toLocaleTimeString()}
+                                Last synced: {lastSynced.toLocaleTimeString() || 'Unknown'}
                             </Text>
                         </View>
                     )}

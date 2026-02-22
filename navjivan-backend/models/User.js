@@ -26,11 +26,13 @@ const userSchema = new mongoose.Schema(
 
     puffCoins: { type: Number, default: 0 },
     totalRelapses: { type: Number, default: 0 },
-    
+
     // Flexible objects for questionnaire data
     smokingData: { type: Object, default: {} },
     healthData: { type: Object, default: {} },
-    
+    fitnessLevel: { type: String, enum: ["beginner", "intermediate", "advanced", null], default: null },
+    selectedPlant: { type: String, default: null },
+
     pushToken: { type: String, default: null },
 
     // App Mode: solo or duo

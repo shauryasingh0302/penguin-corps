@@ -37,7 +37,7 @@ import { useGoals } from '../../context/GoalsContext';
 import { useSteps } from '../../context/StepsContext';
 import { analyzeFoodApi, verifyWaterImageApi } from '../../services/api';
 import { LPHaptics } from '../../services/haptics';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const { width: SCREEN_W } = Dimensions.get('window');
 const PAD = 16;
@@ -138,9 +138,11 @@ export default function FitnessHomeScreen() {
     const [sportGoals, setSportGoals] = useState<any[]>([]);
     const [sportError, setSportError] = useState('');
 
-    // Animations (no smoke animation for non-smokers)
+    // Animations (no smoke animation for non-smokers by default)
     const [waterAnim, setWaterAnim] = useState(false);
     const [sparkle, setSparkle] = useState(false);
+    const [smokeAnim, setSmokeAnim] = useState(false);
+    const [showSmoke, setShowSmoke] = useState(false);
 
     // Water photo camera
     const [showWaterCamera, setShowWaterCamera] = useState(false);
@@ -270,7 +272,7 @@ export default function FitnessHomeScreen() {
 
             // Verify with AI
             const response = await verifyWaterImageApi(`data:image/jpeg;base64,${base64}`);
-            const { isWater, confidence, reason } = response.data;
+            const { isWater, confidence, reason } = response.data as any;
 
             if (isWater && confidence >= 50) {
                 // Water verified - log it
@@ -358,7 +360,7 @@ export default function FitnessHomeScreen() {
         if (!sportInput.trim()) { setSportError('Please enter a sport'); return; }
         setLoadingSport(true); setSportError(''); LPHaptics.light();
         try {
-            const LOCAL_IP = "10.47.0.89";
+            const LOCAL_IP = "10.47.0.90";
             const BASE_URL = Platform.OS === "android" ? `http://${LOCAL_IP}:5000` : "http://localhost:5000";
             const r = await fetch(`${BASE_URL}/ai-coach/generate-training`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sport: sportInput.trim() }) });
             if (!r.ok) { setSportError(`Server error: ${r.status}`); LPHaptics.error(); return; }

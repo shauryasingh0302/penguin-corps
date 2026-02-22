@@ -10,7 +10,7 @@ export const updatePushToken = async (req, res) => {
     }
 
     const user = await User.findByIdAndUpdate(
-      userId, 
+      userId,
       { pushToken },
       { new: true }
     );
@@ -81,7 +81,7 @@ export const updateSmokerStatus = async (req, res) => {
 // Update questionnaire data
 export const updateQuestionnaire = async (req, res) => {
   try {
-    const { isSmoker, fitnessLevel, plan, healthData, smokingData } = req.body;
+    const { isSmoker, fitnessLevel, plan, healthData, smokingData, selectedPlant } = req.body;
     const userId = req.user.id;
 
     const updateData = {};
@@ -90,6 +90,7 @@ export const updateQuestionnaire = async (req, res) => {
     if (plan) updateData.plan = plan;
     if (healthData) updateData.healthData = healthData;
     if (smokingData) updateData.smokingData = smokingData;
+    if (selectedPlant) updateData.selectedPlant = selectedPlant;
 
     const user = await User.findByIdAndUpdate(
       userId,

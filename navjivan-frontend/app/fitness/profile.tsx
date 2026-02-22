@@ -3,15 +3,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useContext, useState } from "react";
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import HealthSyncSettings from "../../components/HealthSyncSettings";
 import { LPColors } from "../../constants/theme";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -56,7 +57,7 @@ export default function FitnessProfileScreen() {
             ) : (
               <View style={[styles.avatar, styles.avatarFallback]}>
                 <Text style={styles.avatarInitial}>
-                  {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                  {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                 </Text>
               </View>
             )}
@@ -65,9 +66,9 @@ export default function FitnessProfileScreen() {
               <Ionicons name="pencil" size={18} color={LPColors.text} />
             </TouchableOpacity>
 
-            <Text style={styles.name}>{user?.name}</Text>
+            <Text style={styles.name}>{user?.name || "User"}</Text>
             <Text style={styles.since}>
-              Fitness Journey Member since {memberSince}
+              Fitness Journey Member since {memberSince || "2024"}
             </Text>
           </View>
         </Animated.View>
@@ -79,12 +80,12 @@ export default function FitnessProfileScreen() {
           <View style={styles.statBox}>
             <Ionicons name="flame-outline" size={20} color={LPColors.primary} />
             <Text style={styles.statLabel}>Streak</Text>
-            <Text style={styles.statValue}>{stats.streakDays} days</Text>
+            <Text style={styles.statValue}>{stats?.streakDays || 0} days</Text>
           </View>
           <View style={styles.statBox}>
             <Ionicons name="time-outline" size={20} color={LPColors.primary} />
             <Text style={styles.statLabel}>Active</Text>
-            <Text style={styles.statValue}>{stats.activeMinutes}m</Text>
+            <Text style={styles.statValue}>{stats?.activeMinutes || 0}m</Text>
           </View>
           <View style={styles.statBox}>
             <Ionicons
@@ -93,7 +94,7 @@ export default function FitnessProfileScreen() {
               color={LPColors.primary}
             />
             <Text style={styles.statLabel}>Burned</Text>
-            <Text style={styles.statValue}>{stats.caloriesBurned}</Text>
+            <Text style={styles.statValue}>{stats?.caloriesBurned || 0}</Text>
           </View>
         </Animated.View>
 
@@ -109,7 +110,7 @@ export default function FitnessProfileScreen() {
               style={styles.overviewBox}
             >
               <Text style={styles.overviewLabel}>Goals completed</Text>
-              <Text style={styles.overviewValue}>{stats.goalsCompleted}</Text>
+              <Text style={styles.overviewValue}>{stats?.goalsCompleted || 0}</Text>
             </LinearGradient>
 
             <LinearGradient
@@ -173,6 +174,13 @@ export default function FitnessProfileScreen() {
               <Text style={styles.badgeTextLocked}>Elite</Text>
             </LinearGradient>
           </View>
+        </Animated.View>
+
+        <Animated.View
+          entering={FadeInDown.delay(450).duration(500)}
+          style={{ paddingHorizontal: 16 }}
+        >
+          <HealthSyncSettings />
         </Animated.View>
 
         <Animated.View

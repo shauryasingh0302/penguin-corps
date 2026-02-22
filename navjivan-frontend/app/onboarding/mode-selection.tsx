@@ -109,7 +109,7 @@ export default function ModeSelectionScreen() {
       });
     } else {
       router.push({
-        pathname: '/onboarding/smoker-check',
+        pathname: '/onboarding/questionnaire',
         params: { signupData, appMode: 'solo' },
       });
     }
