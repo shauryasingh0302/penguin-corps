@@ -55,7 +55,7 @@ export default function AddPostScreen() {
           uri: img.uri,
           name: filename,
           type,
-        });
+        } as any);
       });
 
       await createPost(form);
@@ -69,7 +69,7 @@ export default function AddPostScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 20 }}>
-      {}
+      { }
       <View style={styles.headerRow}>
         <Text style={styles.title}>Create Post</Text>
 
@@ -78,7 +78,7 @@ export default function AddPostScreen() {
         </TouchableOpacity>
       </View>
 
-      {}
+      { }
       <TextInput
         placeholder="Share your thoughts..."
         placeholderTextColor={LPColors.gray}
@@ -88,13 +88,13 @@ export default function AddPostScreen() {
         onChangeText={setContent}
       />
 
-      {}
+      { }
       <TouchableOpacity style={styles.uploadBar} onPress={pickImage}>
         <Ionicons name="image-outline" size={20} color={LPColors.neon} />
         <Text style={styles.uploadBarText}>Add Image</Text>
       </TouchableOpacity>
 
-      {}
+      { }
       <View style={styles.imageGrid}>
         {images.map((img, index) => (
           <View key={index} style={styles.imageWrapper}>
@@ -112,7 +112,7 @@ export default function AddPostScreen() {
         ))}
       </View>
 
-      {}
+      { }
       <TouchableOpacity
         style={[styles.submit, loading && { opacity: 0.6 }]}
         onPress={submit}

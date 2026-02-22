@@ -92,20 +92,17 @@ export default function GeofencingNative() {
             return;
         }
 
+        // Run all independent calls in parallel for faster loading
+        const [location, savedZones, active, idleActive] = await Promise.all([
+            getCurrentLocation(),
+            getGeofenceZones(),
+            isGeofencingActive(),
+            isIdleDetectionActive(),
+        ]);
 
-        const location = await getCurrentLocation();
         setCurrentLocation(location);
-
-
-        const savedZones = await getGeofenceZones();
         setZones(savedZones);
-
-
-        const active = await isGeofencingActive();
         setIsActive(active);
-
-
-        const idleActive = await isIdleDetectionActive();
         setIsIdleDetectionOn(idleActive);
 
 
@@ -374,13 +371,13 @@ export default function GeofencingNative() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {}
+            { }
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>
                     {isSmoker ? 'Geofencing' : 'Activity Monitor'}
                 </Text>
                 <View style={styles.headerRight}>
-                    {}
+                    { }
                     <TouchableOpacity onPress={toggleIdleDetection} style={styles.toggleButton}>
                         <Ionicons
                             name={isIdleDetectionOn ? 'fitness' : 'fitness-outline'}
@@ -388,7 +385,7 @@ export default function GeofencingNative() {
                             color={isIdleDetectionOn ? LPColors.primary : LPColors.textGray}
                         />
                     </TouchableOpacity>
-                    {}
+                    { }
                     {isSmoker && (
                         <TouchableOpacity onPress={toggleGeofencing} style={styles.toggleButton}>
                             <Ionicons
@@ -401,7 +398,7 @@ export default function GeofencingNative() {
                 </View>
             </View>
 
-            {}
+            { }
             <View style={[styles.statusBar, isIdleDetectionOn ? styles.statusActive : styles.statusInactive]}>
                 <Ionicons
                     name={isIdleDetectionOn ? 'fitness' : 'body-outline'}
@@ -414,7 +411,7 @@ export default function GeofencingNative() {
                 <Text style={styles.zoneCount}>Daytime only</Text>
             </View>
 
-            {}
+            { }
             {isSmoker && (
                 <View style={[styles.statusBar, isActive ? styles.statusActive : styles.statusInactive, { marginTop: 4 }]}>
                     <Ionicons
@@ -429,7 +426,7 @@ export default function GeofencingNative() {
                 </View>
             )}
 
-            {}
+            { }
             {isSmoker && (
                 <View style={styles.searchContainer}>
                     <View style={styles.searchInputContainer}>
@@ -453,7 +450,7 @@ export default function GeofencingNative() {
                         )}
                     </View>
 
-                    {}
+                    { }
                     {showSearchResults && (
                         <View style={styles.searchResultsContainer}>
                             {searchResults.length === 0 ? (
@@ -492,7 +489,7 @@ export default function GeofencingNative() {
                 </View>
             )}
 
-            {}
+            { }
             {isSmoker ? (
                 <View style={styles.mapContainer}>
                     <MapView
@@ -504,7 +501,7 @@ export default function GeofencingNative() {
                         showsMyLocationButton={false}
                         customMapStyle={darkMapStyle}
                     >
-                        {}
+                        { }
                         {zones.map((zone) => (
                             <React.Fragment key={zone.id}>
                                 <Circle
@@ -531,19 +528,19 @@ export default function GeofencingNative() {
                             </React.Fragment>
                         ))}
 
-                        {}
+                        { }
                         {selectedLocation && (
                             <Marker coordinate={selectedLocation} pinColor={LPColors.primary} />
                         )}
                     </MapView>
 
-                    {}
+                    { }
                     <TouchableOpacity style={styles.locationButton} onPress={centerOnLocation}>
                         <Ionicons name="locate" size={24} color={LPColors.text} />
                     </TouchableOpacity>
                 </View>
             ) : (
-                
+
                 <View style={styles.nonSmokerContent}>
                     <View style={styles.activityInfoCard}>
                         <Ionicons name="fitness" size={64} color={LPColors.primary} />
@@ -582,10 +579,10 @@ export default function GeofencingNative() {
                 </View>
             )}
 
-            {}
+            { }
             {isSmoker && (
                 <>
-                    {}
+                    { }
                     <View style={styles.instructions}>
                         <Ionicons name="information-circle" size={20} color={LPColors.textGray} />
                         <Text style={styles.instructionsText}>
@@ -593,7 +590,7 @@ export default function GeofencingNative() {
                         </Text>
                     </View>
 
-                    {}
+                    { }
                     <ScrollView
                         style={styles.zoneList}
                         contentContainerStyle={styles.zoneListContent}
@@ -645,7 +642,7 @@ export default function GeofencingNative() {
                         )}
                     </ScrollView>
 
-                    {}
+                    { }
                     <Modal
                         visible={showAddModal}
                         animationType="slide"
@@ -670,7 +667,7 @@ export default function GeofencingNative() {
                                 </View>
 
                                 <ScrollView style={styles.modalForm}>
-                                    {}
+                                    { }
                                     <Text style={styles.label}>Zone Name</Text>
                                     <TextInput
                                         style={styles.input}
@@ -680,7 +677,7 @@ export default function GeofencingNative() {
                                         placeholderTextColor="#666"
                                     />
 
-                                    {}
+                                    { }
                                     <Text style={styles.label}>Zone Type</Text>
                                     <View style={styles.typeSelector}>
                                         <TouchableOpacity
@@ -705,7 +702,7 @@ export default function GeofencingNative() {
                                         </TouchableOpacity>
                                     </View>
 
-                                    {}
+                                    { }
                                     <Text style={styles.label}>Radius (meters)</Text>
                                     <TextInput
                                         style={styles.input}
@@ -716,7 +713,7 @@ export default function GeofencingNative() {
                                         keyboardType="numeric"
                                     />
 
-                                    {}
+                                    { }
                                     <Text style={styles.label}>Notifications</Text>
                                     <View style={styles.switchRow}>
                                         <Text style={styles.switchLabel}>Notify on Enter</Text>
@@ -737,7 +734,7 @@ export default function GeofencingNative() {
                                         />
                                     </View>
 
-                                    {}
+                                    { }
                                     <TouchableOpacity style={styles.addButton} onPress={handleAddZone}>
                                         <Text style={styles.addButtonText}>Add Zone</Text>
                                     </TouchableOpacity>

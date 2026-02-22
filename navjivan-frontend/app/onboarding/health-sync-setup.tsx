@@ -46,24 +46,15 @@ export default function HealthSyncSetupScreen() {
   const appMode = params.appMode as string || 'solo';
 
   // Determine next screen based on mode and smoker status
+  // Forward signupData so the questionnaire can use it for account creation
+  const signupData = params.signupData as string || null;
+
   const navigateToNext = () => {
-    if (appMode === 'duo') {
-      // Duo mode: always go to hotspot selection (both partners can add hotspots)
-      router.push({
-        pathname: '/onboarding/hotspot-selection',
-        params: { appMode: 'duo' },
-      });
-    } else {
-      // Solo mode: go to hotspot if smoker, otherwise questionnaire
-      if (isSmoker) {
-        router.push({
-          pathname: '/onboarding/hotspot-selection',
-          params: { appMode: 'solo' },
-        });
-      } else {
-        router.push('/onboarding/questionnaire');
-      }
-    }
+    // Always go to questionnaire - it will ask smoker-check as the first question
+    router.push({
+      pathname: '/onboarding/questionnaire',
+      params: { signupData: signupData || '', appMode },
+    });
   };
 
   useEffect(() => {
@@ -101,16 +92,16 @@ export default function HealthSyncSetupScreen() {
       if (success) {
         // Save preference
         await AsyncStorage.setItem('@health_sync_enabled', 'true');
-        
+
         // Try to sync initial data
         const data = await syncHealthData();
         if (data) {
           setSyncResult({ steps: data.steps, calories: data.calories });
         }
-        
+
         setConnected(true);
         LPHaptics.success();
-        
+
         // Auto-proceed after short delay
         setTimeout(() => {
           navigateToNext();
@@ -159,7 +150,7 @@ export default function HealthSyncSetupScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
       <LinearGradient colors={['#1A1A2E', '#16213E']} style={StyleSheet.absoluteFill} />
-      
+
       <SafeAreaView style={styles.safe}>
         {/* Header */}
         <Animated.View entering={FadeInUp.delay(100).duration(600)} style={styles.header}>
@@ -183,7 +174,7 @@ export default function HealthSyncSetupScreen() {
             {Platform.OS === 'ios' ? 'Apple Health Integration' : 'Health Connect Integration'}
           </Text>
           <Text style={styles.sectionSubtitle}>
-            {available 
+            {available
               ? 'These apps can sync with Navjivan:'
               : 'Health Connect is not available on this device'}
           </Text>

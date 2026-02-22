@@ -52,7 +52,7 @@ export default function HotspotSelectionScreen() {
   const [currentLocation, setCurrentLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [zones, setZones] = useState<GeofenceZone[]>([]);
-  
+
   // Add zone modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -121,7 +121,7 @@ export default function HotspotSelectionScreen() {
       await addGeofenceZone(newZone);
       setZones(prev => [...prev, newZone]);
       LPHaptics.success();
-      
+
       setShowAddModal(false);
       setSelectedLocation(null);
       setZoneName('');
@@ -135,14 +135,23 @@ export default function HotspotSelectionScreen() {
     }
   };
 
+  // Forward signupData so the questionnaire can use it for account creation
+  const signupData = params.signupData as string || null;
+
   const handleContinue = () => {
     LPHaptics.success();
-    router.push('/onboarding/questionnaire');
+    router.push({
+      pathname: '/onboarding/questionnaire',
+      params: { signupData: signupData || '', isSmoker: (params.isSmoker as string) || 'true' },
+    });
   };
 
   const handleSkip = () => {
     LPHaptics.selection();
-    router.push('/onboarding/questionnaire');
+    router.push({
+      pathname: '/onboarding/questionnaire',
+      params: { signupData: signupData || '', isSmoker: (params.isSmoker as string) || 'true' },
+    });
   };
 
   if (loading) {
@@ -158,7 +167,7 @@ export default function HotspotSelectionScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      
+
       {/* Map */}
       <MapView
         ref={mapRef}
@@ -250,8 +259,8 @@ export default function HotspotSelectionScreen() {
             <TouchableOpacity style={styles.skipBtn} onPress={handleSkip}>
               <Text style={styles.skipBtnText}>Skip for now</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={[styles.continueBtn, zones.length === 0 && styles.continueBtnDisabled]}
               onPress={handleContinue}
             >
@@ -268,7 +277,7 @@ export default function HotspotSelectionScreen() {
           </View>
 
           {/* My Location Button */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.myLocationBtn}
             onPress={() => {
               if (currentLocation && mapRef.current) {
@@ -318,8 +327,8 @@ export default function HotspotSelectionScreen() {
               ))}
             </View>
 
-            <TouchableOpacity 
-              style={[styles.addBtn, saving && { opacity: 0.6 }]} 
+            <TouchableOpacity
+              style={[styles.addBtn, saving && { opacity: 0.6 }]}
               onPress={handleAddZone}
               disabled={saving}
             >
@@ -333,8 +342,8 @@ export default function HotspotSelectionScreen() {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.cancelBtn} 
+            <TouchableOpacity
+              style={styles.cancelBtn}
               onPress={() => {
                 setShowAddModal(false);
                 setSelectedLocation(null);
@@ -502,7 +511,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFF',
   },
-  
+
   // Modal
   modalOverlay: {
     flex: 1,

@@ -89,14 +89,14 @@ export default function DuoPairingScreen() {
     try {
       const res = await getDuoStatusApi();
       const data: any = res.data;
-      
+
       if (data.hasDuo && data.status === 'active') {
         // Already in active duo, go to next step
         LPHaptics.success();
         navigateToNext();
         return;
       }
-      
+
       if (data.hasDuo && data.status === 'pending' && data.inviteCode) {
         // Has pending invite code
         setInviteCode(data.inviteCode);
@@ -112,13 +112,12 @@ export default function DuoPairingScreen() {
     checkDuoStatus();
   }, [checkDuoStatus]);
 
-  // Navigate to next step in duo onboarding flow
   const navigateToNext = () => {
     router.push({
-      pathname: '/onboarding/health-sync-setup',
-      params: { 
+      pathname: '/onboarding/questionnaire',
+      params: {
+        signupData: params.signupData,
         appMode: 'duo',
-        // isSmoker not known yet for duo, will be determined in questionnaire
       },
     });
   };
@@ -175,7 +174,7 @@ export default function DuoPairingScreen() {
     setScanned(true);
     setShowScanner(false);
     LPHaptics.light();
-    
+
     // Check for NAVJIVAN format: NAVJIVAN:XXXXXX
     if (data.startsWith('NAVJIVAN:')) {
       const code = data.replace('NAVJIVAN:', '').toUpperCase().trim();
@@ -185,7 +184,7 @@ export default function DuoPairingScreen() {
         return;
       }
     }
-    
+
     // Fallback: try to extract any 6-char alphanumeric code
     const code = data.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
     if (code.length === 6) {
@@ -292,7 +291,7 @@ export default function DuoPairingScreen() {
                 <Text style={styles.waitingText}>
                   Waiting for your partner to join...
                 </Text>
-                
+
                 {/* Refresh button */}
                 <TouchableOpacity style={styles.refreshButton} onPress={checkDuoStatus}>
                   <Ionicons name="refresh" size={18} color={LPColors.primary} />
