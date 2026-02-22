@@ -9,22 +9,23 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: LPColors.primary,
-        tabBarInactiveTintColor: LPColors.textGray,
+        tabBarActiveTintColor: LPColors.coral,
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.35)',
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: LPColors.surface,
-          borderTopColor: LPColors.border,
+          backgroundColor: '#16213E',
+          borderTopColor: 'rgba(255,107,107,0.15)',
           borderTopWidth: 1,
           height: 80,
           paddingBottom: 10,
           paddingTop: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
+          fontSize: 11,
+          fontWeight: '700',
           marginTop: 4,
+          letterSpacing: 0.5,
         },
       }}>
       <Tabs.Screen
@@ -33,7 +34,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? 'home' : 'home-outline'}
+              name={focused ? 'game-controller' : 'game-controller-outline'}
               size={24}
               color={color}
             />

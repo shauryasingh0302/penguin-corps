@@ -242,7 +242,7 @@ export default function FitnessDietScreen() {
           style={styles.suggestionCard}
         >
           <LinearGradient
-            colors={[LPColors.primary, "#004d2c"]}
+            colors={[LPColors.primary, "#E85D5D"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.suggestionGradient}
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   },
   summaryContainer: {
     flexDirection: "row",
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#16213E",
     borderRadius: 16,
     padding: 16,
     marginBottom: 24,

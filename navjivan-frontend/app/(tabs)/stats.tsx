@@ -2,12 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useContext, useState } from "react";
 import {
-    Dimensions,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Dimensions,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -86,13 +86,13 @@ export default function StatsScreen() {
             />
           }
         >
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(200)}
             style={styles.mainStatsGrid}
           >
             <LinearGradient
-              colors={["#39FF14", "#138808"]}
+              colors={["#FF6B6B", "#E85D5D"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.mainStatCard}
@@ -114,14 +114,14 @@ export default function StatsScreen() {
             </LinearGradient>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(300)}
             style={styles.secondaryGrid}
           >
             <View style={styles.secondaryCard}>
               <View style={styles.secondaryIconContainer}>
-                <Ionicons name="cash" size={24} color="#39FF14" />
+                <Ionicons name="cash" size={24} color="#FF6B6B" />
               </View>
               <Text style={styles.secondaryValue}>₹{moneySaved}</Text>
               <Text style={styles.secondaryLabel}>Money Saved</Text>
@@ -136,7 +136,7 @@ export default function StatsScreen() {
             </View>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(400)}
             style={styles.chartSection}
@@ -169,7 +169,7 @@ export default function StatsScreen() {
             </View>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(500)}
             style={styles.fitnessSection}
@@ -200,7 +200,7 @@ export default function StatsScreen() {
             </View>
           </Animated.View>
 
-          {}
+          { }
           <Animated.View
             entering={FadeInDown.delay(600)}
             style={styles.milestonesSection}

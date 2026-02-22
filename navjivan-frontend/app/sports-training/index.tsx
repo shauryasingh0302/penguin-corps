@@ -169,7 +169,7 @@ export default function SportsTrainingScreen() {
                         style={styles.generateButton}
                     >
                         <LinearGradient
-                            colors={[LPColors.primary, '#004d2c']}
+                            colors={[LPColors.primary, '#E85D5D']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.generateButtonGradient}
@@ -246,7 +246,7 @@ export default function SportsTrainingScreen() {
 
                                 <AnimatedBtn style={styles.startButton}>
                                     <LinearGradient
-                                        colors={[LPColors.primary, '#004d2c']}
+                                        colors={[LPColors.primary, '#E85D5D']}
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 0 }}
                                         style={styles.startButtonGradient}
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     descriptionCard: {
-        backgroundColor: '#1C1C1E',
+        backgroundColor: '#16213E',
         borderRadius: 16,
         padding: 20,
         marginBottom: 24,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#1C1C1E',
+        backgroundColor: '#16213E',
         borderRadius: 12,
         paddingHorizontal: 16,
         paddingVertical: 14,
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     },
     sportCard: {
         width: (width - 56) / 3,
-        backgroundColor: '#1C1C1E',
+        backgroundColor: '#16213E',
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',

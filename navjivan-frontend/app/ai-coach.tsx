@@ -4,15 +4,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Animated as RNAnimated,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Animated as RNAnimated,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -133,7 +133,7 @@ export default function AICoachScreen() {
           <View style={styles.headerInfo}>
             <View style={styles.coachAvatar}>
               <LinearGradient
-                colors={[LPColors.primary, "#004d2c"]}
+                colors={[LPColors.primary, "#E85D5D"]}
                 style={styles.avatarGradient}
               >
                 <Ionicons name="person" size={24} color="#000" />
@@ -177,7 +177,7 @@ export default function AICoachScreen() {
           <View style={{ height: 20 }} />
         </ScrollView>
 
-        {}
+        { }
         {messages.length <= 2 && (
           <View style={styles.promptsWrapper}>
             <ScrollView
@@ -198,7 +198,7 @@ export default function AICoachScreen() {
           </View>
         )}
 
-        {}
+        { }
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
@@ -225,7 +225,7 @@ export default function AICoachScreen() {
                 <LinearGradient
                   colors={
                     inputText.trim()
-                      ? [LPColors.primary, "#004d2c"]
+                      ? [LPColors.primary, "#E85D5D"]
                       : ["#333", "#333"]
                   }
                   style={styles.sendButtonGradient}

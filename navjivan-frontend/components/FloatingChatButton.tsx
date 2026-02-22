@@ -34,7 +34,7 @@ export default function FloatingChatButton() {
                     colors={[LPColors.gradientStart, LPColors.gradientEnd]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    style={[styles.gradient, LPColors.shadow]}
+                    style={styles.gradient}
                 >
                     <Ionicons name="chatbubbles" size={24} color="#000" />
                 </LinearGradient>
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         borderRadius: 30,
-        ...LPColors.shadow,
     },
     gradient: {
         width: 60,

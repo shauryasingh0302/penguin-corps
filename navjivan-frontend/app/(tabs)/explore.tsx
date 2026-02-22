@@ -101,73 +101,73 @@ export default function ExploreScreen() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-    <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
-      <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.header}>
-        <Text style={styles.title}>Community</Text>
+      <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
+        <Animated.View entering={FadeInDown.delay(100).duration(500)} style={styles.header}>
+          <Text style={styles.title}>Community</Text>
 
-        <TouchableOpacity onPress={() => router.push("/community/AddPost")}>
-          <LinearGradient
-            colors={[LPColors.primary, '#004d2c']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.addButton}
-          >
-            <Ionicons name="add" size={20} color="#000" />
-            <Text style={styles.addButtonText}>Create</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </Animated.View>
-
-      <Animated.View entering={FadeInDown.delay(200).duration(500)} style={styles.tabContainer}>
-        <View style={styles.tabsBackground}>
-          <TouchableOpacity
-            onPress={() => setTab("all")}
-            style={[styles.tab, tab === "all" && styles.tabActive]}
-          >
-            <Text style={tab === "all" ? styles.tabTextActive : styles.tabText}>
-              All Posts
-            </Text>
+          <TouchableOpacity onPress={() => router.push("/community/AddPost")}>
+            <LinearGradient
+              colors={[LPColors.primary, '#E85D5D']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.addButton}
+            >
+              <Ionicons name="add" size={20} color="#000" />
+              <Text style={styles.addButtonText}>Create</Text>
+            </LinearGradient>
           </TouchableOpacity>
+        </Animated.View>
 
-          <TouchableOpacity
-            onPress={() => setTab("mine")}
-            style={[styles.tab, tab === "mine" && styles.tabActive]}
-          >
-            <Text style={tab === "mine" ? styles.tabTextActive : styles.tabText}>
-              My Posts
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
+        <Animated.View entering={FadeInDown.delay(200).duration(500)} style={styles.tabContainer}>
+          <View style={styles.tabsBackground}>
+            <TouchableOpacity
+              onPress={() => setTab("all")}
+              style={[styles.tab, tab === "all" && styles.tabActive]}
+            >
+              <Text style={tab === "all" ? styles.tabTextActive : styles.tabText}>
+                All Posts
+              </Text>
+            </TouchableOpacity>
 
-      {loading ? (
-        <View style={styles.centerContainer}>
-          <Text style={styles.loadingText}>Loading community feed...</Text>
-        </View>
-      ) : posts.length === 0 ? (
-        <View style={styles.centerContainer}>
-          <Ionicons name="chatbubbles-outline" size={48} color={LPColors.textGray} />
-          <Text style={styles.emptyText}>No posts yet. Be the first!</Text>
-        </View>
-      ) : (
-        <Animated.FlatList
-          data={posts}
-          keyExtractor={(item) => item._id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          itemLayoutAnimation={Layout.springify()}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor={LPColors.primary}
-              colors={[LPColors.primary]}
-            />
-          }
-        />
-      )}
-    </SafeAreaView>
+            <TouchableOpacity
+              onPress={() => setTab("mine")}
+              style={[styles.tab, tab === "mine" && styles.tabActive]}
+            >
+              <Text style={tab === "mine" ? styles.tabTextActive : styles.tabText}>
+                My Posts
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+
+        {loading ? (
+          <View style={styles.centerContainer}>
+            <Text style={styles.loadingText}>Loading community feed...</Text>
+          </View>
+        ) : posts.length === 0 ? (
+          <View style={styles.centerContainer}>
+            <Ionicons name="chatbubbles-outline" size={48} color={LPColors.textGray} />
+            <Text style={styles.emptyText}>No posts yet. Be the first!</Text>
+          </View>
+        ) : (
+          <Animated.FlatList
+            data={posts}
+            keyExtractor={(item) => item._id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            itemLayoutAnimation={Layout.springify()}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={LPColors.primary}
+                colors={[LPColors.primary]}
+              />
+            }
+          />
+        )}
+      </SafeAreaView>
     </LinearGradient>
   );
 }

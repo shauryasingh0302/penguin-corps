@@ -428,7 +428,7 @@ export async function startIdleDetection(): Promise<void> {
       foregroundService: {
         notificationTitle: "Activity Monitor",
         notificationBody: "Monitoring your activity to keep you moving",
-        notificationColor: "#39FF14",
+        notificationColor: "#FF6B6B",
       },
       pausesUpdatesAutomatically: false,
       activityType: Location.ActivityType.Other,

@@ -3,15 +3,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import React, { useContext, useState } from "react";
 import {
-    Dimensions,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -110,7 +110,7 @@ export default function SignupScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scroll}
         >
-          {}
+          { }
           <View style={styles.header}>
             <View style={styles.iconCircle}>
               <Ionicons name="person-add" size={RFValue(38)} color="#000" />
@@ -122,7 +122,7 @@ export default function SignupScreen() {
             </Text>
           </View>
 
-          {}
+          { }
           <View style={styles.inputBox}>
             <Ionicons
               name="person-outline"
@@ -168,7 +168,7 @@ export default function SignupScreen() {
             />
           </View>
 
-          {}
+          { }
           <View style={styles.inputBox}>
             <Ionicons
               name="calendar-outline"
@@ -184,7 +184,7 @@ export default function SignupScreen() {
             />
           </View>
 
-          {}
+          { }
           <View style={styles.inputBox}>
             <Ionicons
               name="resize-outline"
@@ -200,7 +200,7 @@ export default function SignupScreen() {
             />
           </View>
 
-          {}
+          { }
           <View style={styles.inputBox}>
             <Ionicons
               name="barbell-outline"
@@ -216,13 +216,13 @@ export default function SignupScreen() {
             />
           </View>
 
-          {}
+          { }
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
-          {}
+          { }
           <TouchableOpacity onPress={onSignup} activeOpacity={0.8}>
             <LinearGradient
-              colors={["#39FF14", "#00A84F"]}
+              colors={["#FF6B6B", "#E85D5D"]}
               style={styles.button}
             >
               <Text style={styles.buttonText}>
@@ -231,11 +231,11 @@ export default function SignupScreen() {
             </LinearGradient>
           </TouchableOpacity>
 
-          {}
+          { }
           <TouchableOpacity onPress={() => router.push("/auth/login")}>
             <Text style={styles.switchText}>
               Already have an account?{" "}
-              <Text style={{ color: "#39FF14", fontWeight: "bold" }}>
+              <Text style={{ color: "#FF6B6B", fontWeight: "bold" }}>
                 Login
               </Text>
             </Text>
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     width: wp(24),
     height: wp(24),
     borderRadius: wp(12),
-    backgroundColor: "#39FF14",
+    backgroundColor: "#FF6B6B",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: hp(2),

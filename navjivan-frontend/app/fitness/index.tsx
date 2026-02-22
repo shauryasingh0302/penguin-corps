@@ -142,7 +142,11 @@ export default function FitnessHomeScreen() {
     const [sparkle, setSparkle] = useState(false);
 
     const completedGoals = goals.filter((g: any) => g.completed).length;
-    const plantStage = getPlantStage(waterIntake, completedGoals, goals.length, smokesToday, meals.length);
+    const localPlantStage = getPlantStage(waterIntake, completedGoals, goals.length, smokesToday, meals.length);
+
+    // Duo sync: use shared plant stage when in active duo
+    const [duoPlantStage, setDuoPlantStage] = useState<number | null>(null);
+    const plantStage = duoPlantStage !== null ? duoPlantStage : localPlantStage;
 
     // ── Load persisted data ──
     useEffect(() => {
@@ -188,6 +192,28 @@ export default function FitnessHomeScreen() {
         return () => clearTimeout(timer);
     }, [waterIntake, meals.length, completedGoals, smokesToday, currentSteps, caloriesBurnt]);
 
+    // ── Poll duo plant stage every 15s ──
+    useEffect(() => {
+        let active = true;
+        const pollDuo = async () => {
+            try {
+                const { getDuoStatusApi } = await import('../../services/api');
+                const res = await getDuoStatusApi();
+                const d: any = res.data;
+                if (d.hasDuo && d.status === 'active' && active) {
+                    setDuoPlantStage(d.plantStage);
+                } else if (active) {
+                    setDuoPlantStage(null);
+                }
+            } catch (e) {
+                if (active) setDuoPlantStage(null);
+            }
+        };
+        pollDuo();
+        const interval = setInterval(pollDuo, 15000);
+        return () => { active = false; clearInterval(interval); };
+    }, []);
+
     const getBMICategory = (v: number) => v < 18.5 ? 'Underweight' : v < 25 ? 'Normal' : v < 30 ? 'Overweight' : 'Obese';
     const getBMIColor = (v: number | null) => !v ? '#999' : v < 18.5 ? '#3B82F6' : v < 25 ? LPColors.primary : v < 30 ? '#F59E0B' : '#EF4444';
 
@@ -204,7 +230,6 @@ export default function FitnessHomeScreen() {
 
     // Water
     const handleWater = () => {
-        if (waterIntake >= 12) return;
         updateWaterIntake(waterIntake + 1);
         setWaterAnim(true); setTimeout(() => setWaterAnim(false), 3500);
         LPHaptics.success();
@@ -218,7 +243,7 @@ export default function FitnessHomeScreen() {
         setSmokeAnim(true); setTimeout(() => setSmokeAnim(false), 4000);
         LPHaptics.error();
         // Notify duo partner
-        try { const { logDuoSmokeApi } = await import('../../services/api'); await logDuoSmokeApi(n); } catch (e) {}
+        try { const { logDuoSmokeApi } = await import('../../services/api'); await logDuoSmokeApi(n); } catch (e) { }
     };
 
     // Goals

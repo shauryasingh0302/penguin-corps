@@ -50,8 +50,8 @@ const PASTEL = {
   darkGreen: '#2D6A4F',
   brown: '#8B5E3C',
   soil: '#5C4033',
-  consoleBody: '#FF6B6B',
-  consoleDark: '#E85D5D',
+  consoleBody: '#FFE4C9',
+  consoleDark: '#FFD4A8',
   screenBorder: '#333',
   btnBlue: '#74B9FF',
   btnGreen: '#55EFC4',
@@ -75,154 +75,221 @@ const getPlantStage = (water: number, goalsCompleted: number, totalGoals: number
 
 // ── SVG Garden Scene ──
 const GardenScene = ({ plantStage, waterAnim, smokeAnim, sparkleAnim }: any) => {
-  const leafColor = smokeAnim ? '#6B8E6B' : plantStage >= 3 ? '#2ECC71' : '#7EC8A0';
-  const sunBrightness = sparkleAnim ? 1 : 0.7 + (plantStage * 0.075);
+  const W = GARDEN_W;
+  const H = GARDEN_H;
+  const potTop = H - 95;
+  const potW = 120;
+  const potTopW = potW + 10;
+  const potBotW = potW - 30;
+  const potH = 65;
+  const potX = (W - potTopW) / 2;
+  const soilY = potTop + 8;
 
   return (
-    <Svg width={GARDEN_W} height={GARDEN_H} viewBox={`0 0 ${GARDEN_W} ${GARDEN_H}`}>
+    <Svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
       <Defs>
-        <RadialGradient id="sunGlow" cx="85%" cy="15%" r="20%">
-          <Stop offset="0%" stopColor="#FFF176" stopOpacity={String(sunBrightness)} />
-          <Stop offset="100%" stopColor="#FFF176" stopOpacity="0" />
+        <RadialGradient id="sunGlow" cx="85%" cy="12%" r="25%">
+          <Stop offset="0%" stopColor="#FFF9C4" stopOpacity="0.9" />
+          <Stop offset="50%" stopColor="#FFE082" stopOpacity="0.4" />
+          <Stop offset="100%" stopColor="#FFE082" stopOpacity="0" />
         </RadialGradient>
       </Defs>
 
-      {/* Sky */}
-      <Rect x="0" y="0" width={String(GARDEN_W)} height={String(GARDEN_H)} fill="#87CEEB" rx="12" />
+      {/* Pink sky background */}
+      <Rect x="0" y="0" width={String(W)} height={String(H)} fill="#F8BBD0" rx="12" />
 
-      {/* Clouds */}
-      <Ellipse cx="60" cy="40" rx="30" ry="14" fill="rgba(255,255,255,0.8)" />
-      <Ellipse cx="80" cy="35" rx="25" ry="12" fill="rgba(255,255,255,0.9)" />
-      <Ellipse cx={String(GARDEN_W - 80)} cy="50" rx="28" ry="13" fill="rgba(255,255,255,0.7)" />
+      {/* Bottom cream strip */}
+      <Rect x="0" y={String(H - 20)} width={String(W)} height="20" fill="#FFF5E4" rx="0" />
 
-      {/* Sun */}
-      <Circle cx={String(GARDEN_W - 50)} cy="40" r="22" fill="#FFD93D" opacity={String(sunBrightness)} />
-      <Circle cx={String(GARDEN_W - 50)} cy="40" r="35" fill="url(#sunGlow)" />
-
-      {/* Sun rays when sparkle */}
+      {/* Sun (top-right) */}
+      <Circle cx={String(W - 45)} cy="40" r="50" fill="url(#sunGlow)" />
+      <Circle cx={String(W - 45)} cy="40" r="22" fill="#FFD93D" />
+      <Circle cx={String(W - 45)} cy="40" r="17" fill="#FFE57F" />
+      {/* Sun rays */}
+      {sparkleAnim && [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => {
+        const rad = (angle * Math.PI) / 180;
+        const x1 = W - 45 + Math.cos(rad) * 26;
+        const y1 = 40 + Math.sin(rad) * 26;
+        const x2 = W - 45 + Math.cos(rad) * 36;
+        const y2 = 40 + Math.sin(rad) * 36;
+        return <Path key={i} d={`M${x1} ${y1} L${x2} ${y2}`} stroke="#FFD93D" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />;
+      })}
+      {/* Sun sparkles */}
       {sparkleAnim && (
         <G>
-          <Path d={`M${GARDEN_W - 50} 5 L${GARDEN_W - 48} 15 L${GARDEN_W - 52} 15 Z`} fill="#FFD93D" opacity="0.6" />
-          <Path d={`M${GARDEN_W - 20} 20 L${GARDEN_W - 25} 28 L${GARDEN_W - 18} 28 Z`} fill="#FFD93D" opacity="0.6" />
-          <Path d={`M${GARDEN_W - 80} 20 L${GARDEN_W - 75} 28 L${GARDEN_W - 82} 28 Z`} fill="#FFD93D" opacity="0.6" />
+          <Circle cx={String(W - 20)} cy="20" r="2" fill="#FFF" opacity="0.8" />
+          <Circle cx={String(W - 70)} cy="25" r="1.5" fill="#FFF" opacity="0.6" />
+          <Circle cx={String(W - 30)} cy="60" r="1.5" fill="#FFF" opacity="0.7" />
         </G>
       )}
 
-      {/* Ground / Grass */}
-      <Rect x="0" y={String(GARDEN_H - 60)} width={String(GARDEN_W)} height="60" fill="#7EC8A0" rx="0" />
-      <Rect x="0" y={String(GARDEN_H - 30)} width={String(GARDEN_W)} height="30" fill={PASTEL.soil} />
+      {/* ── TERRACOTTA POT ── */}
+      {/* Pot body (trapezoid) */}
+      <Path
+        d={`M${potX} ${potTop} L${potX + (potTopW - potBotW) / 2} ${potTop + potH} L${potX + potTopW - (potTopW - potBotW) / 2} ${potTop + potH} L${potX + potTopW} ${potTop} Z`}
+        fill="#A0522D"
+      />
+      {/* Pot highlight */}
+      <Path
+        d={`M${potX + 8} ${potTop + 4} L${potX + (potTopW - potBotW) / 2 + 8} ${potTop + potH - 4} L${potX + potTopW / 2} ${potTop + potH - 4} L${potX + potTopW / 2 - 4} ${potTop + 4} Z`}
+        fill="#B8733D"
+        opacity="0.5"
+      />
+      {/* Pot rim */}
+      <Rect
+        x={String(potX - 4)}
+        y={String(potTop - 6)}
+        width={String(potTopW + 8)}
+        height="10"
+        rx="4"
+        fill="#8B4513"
+      />
+      {/* Soil */}
+      <Ellipse
+        cx={String(W / 2)}
+        cy={String(soilY + 2)}
+        rx={String(potTopW / 2 - 2)}
+        ry="10"
+        fill="#3E2723"
+      />
 
-      {/* Grass blades */}
-      {[20, 55, 90, 130, 170, 210, 250].map((x, i) => (
-        <Path key={i} d={`M${x} ${GARDEN_H - 60} Q${x + 3} ${GARDEN_H - 75} ${x + 6} ${GARDEN_H - 60}`} fill="#5CB85C" />
-      ))}
+      {/* ── PLANT STAGES ── */}
+      {/* Stage 0: Just soil, empty pot */}
 
-      {/* Smoke clouds when smoking */}
+      {/* Stage 1: Tiny sprout */}
+      {plantStage >= 1 && (
+        <G>
+          {/* Stem */}
+          <Path d={`M${W / 2} ${soilY} L${W / 2} ${soilY - 30}`} stroke="#4CAF50" strokeWidth="3" strokeLinecap="round" />
+          {/* Two tiny leaves */}
+          <Ellipse cx={String(W / 2 - 8)} cy={String(soilY - 28)} rx="6" ry="4" fill="#66BB6A" transform={`rotate(-30 ${W / 2 - 8} ${soilY - 28})`} />
+          <Ellipse cx={String(W / 2 + 8)} cy={String(soilY - 28)} rx="6" ry="4" fill="#81C784" transform={`rotate(30 ${W / 2 + 8} ${soilY - 28})`} />
+        </G>
+      )}
+
+      {/* Stage 2: Small plant with more leaves */}
+      {plantStage >= 2 && (
+        <G>
+          {/* Extend stem */}
+          <Path d={`M${W / 2} ${soilY - 30} L${W / 2} ${soilY - 50}`} stroke="#43A047" strokeWidth="3" strokeLinecap="round" />
+          {/* More leaves */}
+          <Ellipse cx={String(W / 2 - 14)} cy={String(soilY - 42)} rx="10" ry="5" fill="#66BB6A" transform={`rotate(-35 ${W / 2 - 14} ${soilY - 42})`} />
+          <Ellipse cx={String(W / 2 + 14)} cy={String(soilY - 42)} rx="10" ry="5" fill="#81C784" transform={`rotate(35 ${W / 2 + 14} ${soilY - 42})`} />
+          <Ellipse cx={String(W / 2)} cy={String(soilY - 52)} rx="8" ry="5" fill="#4CAF50" />
+        </G>
+      )}
+
+      {/* Stage 3: Bush with thick leaves */}
+      {plantStage >= 3 && (
+        <G>
+          <Path d={`M${W / 2} ${soilY - 50} L${W / 2} ${soilY - 68}`} stroke="#388E3C" strokeWidth="3.5" strokeLinecap="round" />
+          {/* Big leaf cluster */}
+          <Ellipse cx={String(W / 2 - 18)} cy={String(soilY - 58)} rx="14" ry="7" fill="#66BB6A" transform={`rotate(-25 ${W / 2 - 18} ${soilY - 58})`} />
+          <Ellipse cx={String(W / 2 + 18)} cy={String(soilY - 58)} rx="14" ry="7" fill="#81C784" transform={`rotate(25 ${W / 2 + 18} ${soilY - 58})`} />
+          <Ellipse cx={String(W / 2 - 10)} cy={String(soilY - 68)} rx="12" ry="6" fill="#4CAF50" transform={`rotate(-15 ${W / 2 - 10} ${soilY - 68})`} />
+          <Ellipse cx={String(W / 2 + 10)} cy={String(soilY - 68)} rx="12" ry="6" fill="#66BB6A" transform={`rotate(15 ${W / 2 + 10} ${soilY - 68})`} />
+          <Ellipse cx={String(W / 2)} cy={String(soilY - 72)} rx="10" ry="6" fill="#81C784" />
+        </G>
+      )}
+
+      {/* Stage 4: Full flower with hearts */}
+      {plantStage >= 4 && (
+        <G>
+          <Path d={`M${W / 2} ${soilY - 68} L${W / 2} ${soilY - 90}`} stroke="#2E7D32" strokeWidth="3.5" strokeLinecap="round" />
+          {/* Flower petals (yellow) */}
+          {[0, 60, 120, 180, 240, 300].map((angle, i) => {
+            const rad = (angle * Math.PI) / 180;
+            const cx = W / 2 + Math.cos(rad) * 10;
+            const cy = soilY - 95 + Math.sin(rad) * 10;
+            return <Ellipse key={i} cx={String(cx)} cy={String(cy)} rx="8" ry="5" fill={i % 2 === 0 ? '#FFD54F' : '#FFEB3B'} transform={`rotate(${angle} ${cx} ${cy})`} />;
+          })}
+          {/* Flower center */}
+          <Circle cx={String(W / 2)} cy={String(soilY - 95)} r="6" fill="#FF9800" />
+          <Circle cx={String(W / 2)} cy={String(soilY - 95)} r="4" fill="#FFB74D" />
+
+          {/* Floating hearts */}
+          <Path d={`M${W / 2 - 20} ${soilY - 115} C${W / 2 - 24} ${soilY - 120} ${W / 2 - 17} ${soilY - 123} ${W / 2 - 20} ${soilY - 118} C${W / 2 - 23} ${soilY - 123} ${W / 2 - 16} ${soilY - 120} ${W / 2 - 20} ${soilY - 115} Z`} fill="#E91E63" opacity="0.7" />
+          <Path d={`M${W / 2 + 22} ${soilY - 120} C${W / 2 + 18} ${soilY - 125} ${W / 2 + 25} ${soilY - 128} ${W / 2 + 22} ${soilY - 123} C${W / 2 + 19} ${soilY - 128} ${W / 2 + 26} ${soilY - 125} ${W / 2 + 22} ${soilY - 120} Z`} fill="#FF4081" opacity="0.5" />
+        </G>
+      )}
+
+      {/* ── WATER ANIMATION ── */}
+      {waterAnim && (
+        <G>
+          {/* Watering can silhouette */}
+          <Rect x={String(W / 2 + 40)} y={String(soilY - 80)} width="35" height="20" rx="4" fill="#64B5F6" opacity="0.8" />
+          <Rect x={String(W / 2 + 65)} y={String(soilY - 75)} width="20" height="6" rx="3" fill="#64B5F6" opacity="0.8" />
+          {/* Water droplets */}
+          {[0, 8, 16, 5, 13, -3, 10].map((offset, i) => (
+            <Ellipse key={i} cx={String(W / 2 + 70 + offset * 0.5 - i * 3)} cy={String(soilY - 55 + i * 6)} rx="2.5" ry="4" fill="#42A5F5" opacity={String(0.9 - i * 0.1)} />
+          ))}
+        </G>
+      )}
+
+      {/* ── SMOKE ANIMATION ── */}
       {smokeAnim && (
-        <G opacity="0.5">
-          <Ellipse cx={String(GARDEN_W / 2 - 20)} cy="80" rx="25" ry="12" fill="#9E9E9E" />
-          <Ellipse cx={String(GARDEN_W / 2 + 15)} cy="70" rx="20" ry="10" fill="#BDBDBD" />
-          <Ellipse cx={String(GARDEN_W / 2)} cy="90" rx="18" ry="9" fill="#757575" />
+        <G>
+          <Ellipse cx={String(W / 2 - 15)} cy={String(soilY - 40)} rx="22" ry="12" fill="#9E9E9E" opacity="0.5" />
+          <Ellipse cx={String(W / 2 + 10)} cy={String(soilY - 55)} rx="18" ry="10" fill="#BDBDBD" opacity="0.4" />
+          <Ellipse cx={String(W / 2 - 5)} cy={String(soilY - 70)} rx="15" ry="8" fill="#757575" opacity="0.3" />
+          <Ellipse cx={String(W / 2 + 20)} cy={String(soilY - 30)} rx="12" ry="7" fill="#616161" opacity="0.35" />
+          {/* Wilting indicator */}
+          <Ellipse cx={String(W / 2)} cy={String(soilY - 10)} rx="20" ry="5" fill="rgba(100,100,100,0.2)" />
         </G>
       )}
-
-      {/* Plant based on stage */}
-      <G transform={`translate(${GARDEN_W / 2}, ${GARDEN_H - 60})`}>
-        {/* Stem */}
-        {plantStage >= 0 && (
-          <Rect x="-2" y={String(-8 - plantStage * 18)} width="4" height={String(8 + plantStage * 18)} fill={PASTEL.darkGreen} rx="2" />
-        )}
-
-        {/* Stage 0: Seed */}
-        {plantStage === 0 && (
-          <Ellipse cx="0" cy="-4" rx="6" ry="4" fill={PASTEL.brown} />
-        )}
-
-        {/* Stage 1: Sprout with 2 tiny leaves */}
-        {plantStage >= 1 && (
-          <G>
-            <Ellipse cx="-10" cy="-22" rx="8" ry="5" fill={leafColor} />
-            <Ellipse cx="10" cy="-22" rx="8" ry="5" fill={leafColor} />
-          </G>
-        )}
-
-        {/* Stage 2: Small plant */}
-        {plantStage >= 2 && (
-          <G>
-            <Ellipse cx="-16" cy="-38" rx="12" ry="7" fill={leafColor} />
-            <Ellipse cx="16" cy="-38" rx="12" ry="7" fill={leafColor} />
-            <Ellipse cx="0" cy="-46" rx="10" ry="8" fill={leafColor} />
-          </G>
-        )}
-
-        {/* Stage 3: Bush */}
-        {plantStage >= 3 && (
-          <G>
-            <Ellipse cx="-20" cy="-55" rx="16" ry="10" fill={leafColor} />
-            <Ellipse cx="20" cy="-55" rx="16" ry="10" fill={leafColor} />
-            <Ellipse cx="0" cy="-65" rx="18" ry="12" fill={leafColor} />
-            <Ellipse cx="-12" cy="-70" rx="12" ry="8" fill={leafColor} />
-            <Ellipse cx="12" cy="-70" rx="12" ry="8" fill={leafColor} />
-          </G>
-        )}
-
-        {/* Stage 4: Full Tree */}
-        {plantStage >= 4 && (
-          <G>
-            <Ellipse cx="0" cy="-82" rx="28" ry="18" fill="#27AE60" />
-            <Ellipse cx="-18" cy="-78" rx="18" ry="12" fill="#2ECC71" />
-            <Ellipse cx="18" cy="-78" rx="18" ry="12" fill="#2ECC71" />
-            <Ellipse cx="0" cy="-92" rx="20" ry="12" fill="#27AE60" />
-            {/* Flowers */}
-            <Circle cx="-12" cy="-88" r="3" fill="#FF6F61" />
-            <Circle cx="10" cy="-80" r="3" fill="#FFB7B2" />
-            <Circle cx="0" cy="-96" r="3" fill="#FFDAC1" />
-          </G>
-        )}
-
-        {/* Water droplets animation */}
-        {waterAnim && (
-          <G>
-            <Path d="M-8 -10 Q-6 -16 -4 -10" fill="#74B9FF" opacity="0.8" />
-            <Path d="M4 -14 Q6 -20 8 -14" fill="#74B9FF" opacity="0.6" />
-            <Path d="M-2 -6 Q0 -12 2 -6" fill="#74B9FF" opacity="0.7" />
-          </G>
-        )}
-
-        {/* Sparkles */}
-        {sparkleAnim && (
-          <G>
-            <Path d="M-25 -80 L-23 -85 L-21 -80 L-23 -75 Z" fill="#FFD700" opacity="0.8" />
-            <Path d="M22 -90 L24 -95 L26 -90 L24 -85 Z" fill="#FFD700" opacity="0.7" />
-            <Path d="M0 -100 L2 -105 L4 -100 L2 -95 Z" fill="#FFD700" opacity="0.9" />
-          </G>
-        )}
-      </G>
     </Svg>
   );
 };
 
-// ── Console Button ──
-const ConsoleButton = ({ icon, label, color, onPress, badge }: any) => {
+
+
+
+
+
+
+// ── Action Buttons ──
+const ActionBtn = ({ label, onPress, badge }: any) => {
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   return (
     <Pressable
-      onPressIn={() => { LPHaptics.light(); scale.value = withSpring(0.88); }}
+      onPressIn={() => { LPHaptics.light(); scale.value = withSpring(0.92); }}
       onPressOut={() => { scale.value = withSpring(1); }}
       onPress={onPress}
+      style={{ width: '100%', alignItems: 'center', marginBottom: 12 }}
     >
-      <Animated.View style={[s.consoleBtn, { backgroundColor: color }, animStyle]}>
-        <View style={s.consoleBtnInner}>
-          <Ionicons name={icon} size={28} color="#FFF" />
-          {badge !== undefined && badge > 0 && (
-            <View style={s.btnBadge}>
-              <Text style={s.btnBadgeText}>{badge}</Text>
-            </View>
-          )}
-        </View>
-        <Text style={s.consoleBtnLabel}>{label}</Text>
+      <Animated.View style={[s.actionBtn, animStyle]}>
+        <Text style={s.actionBtnText}>{label}</Text>
+        {badge !== undefined && badge > 0 && (
+          <View style={s.btnBadge}>
+            <Text style={s.btnBadgeText}>{badge}</Text>
+          </View>
+        )}
+      </Animated.View>
+    </Pressable>
+  );
+};
+
+const SmokeBtnCenter = ({ onPress, smokes }: any) => {
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+
+  return (
+    <Pressable
+      onPressIn={() => { LPHaptics.light(); scale.value = withSpring(0.92); }}
+      onPressOut={() => { scale.value = withSpring(1); }}
+      onPress={onPress}
+      style={{ alignItems: 'center' }}
+    >
+      <Animated.View style={[s.smokeBtnCenter, animStyle]}>
+        <Text style={s.smokeBtnText}>SMOKED</Text>
+        <Text style={s.smokeBtnIcon}>!</Text>
+        {smokes !== undefined && smokes > 0 && (
+          <View style={[s.btnBadge, { top: 10, right: 10 }]}>
+            <Text style={s.btnBadgeText}>{smokes}</Text>
+          </View>
+        )}
       </Animated.View>
     </Pressable>
   );
@@ -276,7 +343,11 @@ export default function HomeScreen() {
   const completedGoals = goals.filter(g => g.completed).length;
 
   // Plant stage
-  const plantStage = getPlantStage(waterIntake, completedGoals, goals.length, smokesToday);
+  const localPlantStage = getPlantStage(waterIntake, completedGoals, goals.length, smokesToday);
+
+  // Duo sync: use shared plant stage when in active duo
+  const [duoPlantStage, setDuoPlantStage] = useState<number | null>(null);
+  const plantStage = duoPlantStage !== null ? duoPlantStage : localPlantStage;
 
   // Dashboard
   const loadDashboard = async () => {
@@ -293,6 +364,46 @@ export default function HomeScreen() {
 
   useEffect(() => { loadDashboard(); }, []);
   useEffect(() => { loadSmokes(); loadMeals(); }, []);
+
+  // ── Sync stats to Duo (if active) ──
+  useEffect(() => {
+    const syncDuo = async () => {
+      try {
+        const { updateDuoStatsApi } = await import('../../services/api');
+        await updateDuoStatsApi({
+          water: waterIntake,
+          meals: meals.length,
+          goalsCompleted: completedGoals,
+          goalsTotal: goals.length,
+          smokes: smokesToday,
+        });
+      } catch (e) { }
+    };
+    const timer = setTimeout(syncDuo, 2000);
+    return () => clearTimeout(timer);
+  }, [waterIntake, meals.length, completedGoals, smokesToday]);
+
+  // ── Poll duo plant stage every 15s ──
+  useEffect(() => {
+    let active = true;
+    const pollDuo = async () => {
+      try {
+        const { getDuoStatusApi } = await import('../../services/api');
+        const res = await getDuoStatusApi();
+        const d: any = res.data;
+        if (d.hasDuo && d.status === 'active' && active) {
+          setDuoPlantStage(d.plantStage);
+        } else if (active) {
+          setDuoPlantStage(null);
+        }
+      } catch (e) {
+        if (active) setDuoPlantStage(null);
+      }
+    };
+    pollDuo();
+    const interval = setInterval(pollDuo, 15000);
+    return () => { active = false; clearInterval(interval); };
+  }, []);
 
   const onRefresh = () => { setRefreshing(true); LPHaptics.light(); loadDashboard(); };
 
@@ -332,11 +443,12 @@ export default function HomeScreen() {
     setSmokeAnimActive(true);
     setTimeout(() => setSmokeAnimActive(false), 2500);
     LPHaptics.error();
+    // Notify duo partner
+    try { const { logDuoSmokeApi } = await import('../../services/api'); await logDuoSmokeApi(count); } catch (e) { }
   };
 
   // Water
   const handleWater = () => {
-    if (waterIntake >= 12) return;
     updateWaterIntake(waterIntake + 1);
     setWaterAnimActive(true);
     setTimeout(() => setWaterAnimActive(false), 1500);
@@ -440,24 +552,20 @@ export default function HomeScreen() {
               </View>
             </View>
 
-            {/* ── D-Pad decorative ── */}
-            <View style={s.dpadArea}>
-              <View style={s.dpad}>
-                <View style={[s.dpadBtn, s.dpadUp]} />
-                <View style={s.dpadRow}>
-                  <View style={[s.dpadBtn, s.dpadLeft]} />
-                  <View style={s.dpadCenter} />
-                  <View style={[s.dpadBtn, s.dpadRight]} />
-                </View>
-                <View style={[s.dpadBtn, s.dpadDown]} />
+            {/* ── ACTION BUTTONS AREA ── */}
+            <View style={s.actionArea}>
+              <View style={s.actionCol}>
+                <ActionBtn label="WATER" onPress={handleWater} badge={waterIntake} />
+                <ActionBtn label="GOALS" onPress={() => setShowGoalsModal(true)} badge={completedGoals} />
+              </View>
+              
+              <View style={s.actionCenterCol}>
+                <SmokeBtnCenter onPress={() => setShowSmokeModal(true)} smokes={smokesToday} />
               </View>
 
-              {/* ── 4 GAME BUTTONS ── */}
-              <View style={s.buttonsGrid}>
-                <ConsoleButton icon="water" label="Water" color={PASTEL.btnBlue} onPress={handleWater} badge={waterIntake} />
-                <ConsoleButton icon="restaurant" label="Meal" color={PASTEL.btnGreen} onPress={() => setShowMealModal(true)} badge={meals.length} />
-                <ConsoleButton icon="cloud" label="Smoke" color={PASTEL.btnRed} onPress={() => setShowSmokeModal(true)} badge={smokesToday} />
-                <ConsoleButton icon="trophy" label="Goals" color={PASTEL.btnYellow} onPress={() => setShowGoalsModal(true)} badge={completedGoals} />
+              <View style={s.actionCol}>
+                <ActionBtn label="MEAL" onPress={() => setShowMealModal(true)} badge={meals.length} />
+                <ActionBtn label={`ON THE\nMOVE`} onPress={() => router.push('/sports-training' as any)} />
               </View>
             </View>
 
@@ -465,6 +573,9 @@ export default function HomeScreen() {
             <View style={s.selectStartRow}>
               <TouchableOpacity onPress={() => router.push('/sos')} style={s.selectBtn}>
                 <Text style={s.selectText}>SOS</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/duo' as any)} style={[s.selectBtn, { backgroundColor: 'rgba(255,107,107,0.5)', borderWidth: 1, borderColor: '#FF6B6B' }]}>
+                <Text style={[s.selectText, { color: '#FFF' }]}>🤝 DUO</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => router.push('/sports-training' as any)} style={s.selectBtn}>
                 <Text style={s.selectText}>TRAIN</Text>
@@ -653,37 +764,52 @@ const s = StyleSheet.create({
   hudItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.35)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, gap: 3 },
   hudText: { color: '#FFF', fontSize: 10, fontWeight: 'bold' },
 
-  // D-Pad + Buttons area
-  dpadArea: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 8, marginBottom: 10 },
-  dpad: { alignItems: 'center' },
-  dpadRow: { flexDirection: 'row', alignItems: 'center' },
-  dpadBtn: { width: 24, height: 24, backgroundColor: 'rgba(0,0,0,0.25)', borderRadius: 3 },
-  dpadUp: { borderTopLeftRadius: 6, borderTopRightRadius: 6 },
-  dpadDown: { borderBottomLeftRadius: 6, borderBottomRightRadius: 6 },
-  dpadLeft: { borderTopLeftRadius: 6, borderBottomLeftRadius: 6 },
-  dpadRight: { borderTopRightRadius: 6, borderBottomRightRadius: 6 },
-  dpadCenter: { width: 24, height: 24, backgroundColor: 'rgba(0,0,0,0.2)' },
-
-  // Console Buttons
-  buttonsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center', maxWidth: 170 },
-  consoleBtn: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+  // Action Buttons Area
+  actionArea: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 12, marginBottom: 16, marginTop: 10 },
+  actionCol: { width: '30%', alignItems: 'center' },
+  actionCenterCol: { width: '40%', alignItems: 'center', justifyContent: 'center' },
+  
+  actionBtn: { 
+    width: '100%', 
+    aspectRatio: 1.5,
+    backgroundColor: '#F8BBD0', 
+    borderRadius: 8, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderBottomWidth: 4,
+    borderBottomColor: '#F48FB1',
+    borderRightWidth: 2,
+    borderRightColor: '#Fce4ec',
+    borderLeftWidth: 1,
+    borderLeftColor: '#Fce4ec',
+    borderTopWidth: 1,
+    borderTopColor: '#Fce4ec',
+    paddingHorizontal: 4,
+  },
+  actionBtnText: { color: '#C2185B', fontSize: 10, fontWeight: '900', textAlign: 'center', letterSpacing: 0.5 },
+  
+  smokeBtnCenter: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: '#F8BBD0',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 6,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
+    borderBottomWidth: 6,
+    borderBottomColor: '#F48FB1',
+    borderRightWidth: 2,
+    borderRightColor: '#F48FB1',
+    borderLeftWidth: 1,
+    borderLeftColor: '#Fce4ec',
+    borderTopWidth: 1,
+    borderTopColor: '#Fce4ec',
+    marginTop: -10,
   },
-  consoleBtnInner: { alignItems: 'center', justifyContent: 'center', position: 'relative' },
-  consoleBtnLabel: { color: '#FFF', fontSize: 9, fontWeight: 'bold', marginTop: 2, textTransform: 'uppercase' },
-  btnBadge: { position: 'absolute', top: -8, right: -12, backgroundColor: '#FFF', borderRadius: 9, minWidth: 18, height: 18, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
-  btnBadgeText: { color: '#333', fontSize: 10, fontWeight: 'bold' },
+  smokeBtnText: { color: '#C2185B', fontSize: 14, fontWeight: '900', letterSpacing: 1 },
+  smokeBtnIcon: { color: '#C2185B', fontSize: 28, fontWeight: 'bold' },
+
+  btnBadge: { position: 'absolute', top: -6, right: -6, backgroundColor: '#FFF', borderRadius: 10, minWidth: 20, height: 20, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 1 },
+  btnBadgeText: { color: '#C2185B', fontSize: 10, fontWeight: 'bold' },
 
   // SELECT / START
   selectStartRow: { flexDirection: 'row', justifyContent: 'center', gap: 20, paddingVertical: 8 },

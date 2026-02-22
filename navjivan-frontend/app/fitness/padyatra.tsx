@@ -2,21 +2,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
-    Alert,
-    Dimensions,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View
+  Alert,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
 import Animated, {
-    Easing,
-    FadeInDown,
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming,
+  Easing,
+  FadeInDown,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSteps } from "../../context/StepsContext";
@@ -394,7 +394,7 @@ export default function PadyatraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#1A1A2E",
   },
   header: {
     flexDirection: "row",
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#39FF14",
+    color: "#FF6B6B",
   },
   statLabel: {
     fontSize: 10,
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   progressCard: {
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#16213E",
     borderRadius: 16,
     padding: 20,
     marginTop: 16,
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   progressDistance: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#39FF14",
+    color: "#FF6B6B",
     marginBottom: 16,
   },
   progressBarContainer: {
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: "100%",
-    backgroundColor: "#39FF14",
+    backgroundColor: "#FF6B6B",
     borderRadius: 4,
   },
   progressPercentage: {
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FFF",
   },
-  statLabel: {
+  statLabelCard: {
     fontSize: 11,
     color: "rgba(255,255,255,0.8)",
   },
@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
   },
   milestoneCard: {
     flexDirection: "row",
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#16213E",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
@@ -652,7 +652,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#39FF14",
+    backgroundColor: "#FF6B6B",
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,

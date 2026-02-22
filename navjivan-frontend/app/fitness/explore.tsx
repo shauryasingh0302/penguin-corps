@@ -93,7 +93,7 @@ export default function FitnessExploreScreen() {
 
                 <TouchableOpacity onPress={() => router.push("/community/AddPost")}>
                     <LinearGradient
-                        colors={[LPColors.primary, '#004d2c']}
+                        colors={[LPColors.primary, '#E85D5D']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={styles.addButton}
@@ -104,7 +104,7 @@ export default function FitnessExploreScreen() {
                 </TouchableOpacity>
             </View>
 
-            {}
+            { }
             <View style={styles.tabContainer}>
                 <View style={styles.tabsBackground}>
                     <TouchableOpacity
@@ -127,7 +127,7 @@ export default function FitnessExploreScreen() {
                 </View>
             </View>
 
-            {}
+            { }
             {loading ? (
                 <View style={styles.centerContainer}>
                     <Text style={styles.loadingText}>Loading community feed...</Text>
